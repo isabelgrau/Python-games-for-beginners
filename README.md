@@ -9,3 +9,7 @@ This repo is a compilation of codes I've worked on to either teach beginner code
 1. tictactoe_v1 - no imported packages, no loops
 2. tictactoe_v2 - no imported packages, with <i>while</i> loop
 3. tictactoe_v3 -
+
+<b>Rock Paper Scissors</b>
+1. rock-paper-scissors-v1 - random moves for both players
+2. rock-paper-scissors-v2 - user input for player 1, random move for player 2
