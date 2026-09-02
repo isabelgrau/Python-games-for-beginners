@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock, paper, scissors · Python games for beginners</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .picks{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:20px;
+  }
+  .pick-btn{
+    flex:1;
+    max-width:110px;
+    padding:16px 8px;
+    font-size:28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .pick-btn .label{ font-size:11px; font-family:'IBM Plex Mono', monospace; color:var(--muted); }
+  .result-row{
+    display:flex;
+    justify-content:center;
+    gap:32px;
+    margin:20px 0;
+    font-size:34px;
+  }
+  .result-side{ text-align:center; }
+  .result-side .who{ font-size:11px; font-family:'IBM Plex Mono', monospace; color:var(--muted); margin-top:6px; }
+  .score{
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="crumb" href="../index.html">&larr; all games</a>
+  <h1>Rock, paper, scissors</h1>
+  <p class="tagline">Pick a move. The computer picks at random.</p>
+
+  <div class="card">
+    <div class="status-row">
+      <span class="msg" id="status">Make your move</span>
+      <span class="score" id="score">0 &ndash; 0 &ndash; 0</span>
+    </div>
+
+    <div class="result-row" id="result" style="display:none;">
+      <div class="result-side"><div id="you-emoji">&#9995;</div><div class="who">you</div></div>
+      <div class="result-side"><div id="cpu-emoji">&#9995;</div><div class="who">computer</div></div>
+    </div>
+
+    <div class="picks">
+      <button class="pick-btn" data-move="rock"><span>&#127934;</span><span class="label">rock</span></button>
+      <button class="pick-btn" data-move="paper"><span>&#128220;</span><span class="label">paper</span></button>
+      <button class="pick-btn" data-move="scissors"><span>&#9986;&#65039;</span><span class="label">scissors</span></button>
+    </div>
+
+    <details class="build-note">
+      <summary>How this was built <i class="chev">&#9662;</i></summary>
+      <div class="body">
+        Started as a version where both players' moves were picked at random, just to get the win logic working, then rebuilt with real user input for player 1 while the computer kept picking randomly. This page plays the second version's logic.
+        <br>
+        <a href="https://github.com/isabelgrau/Python-games-for-beginners/tree/main/rock-paper-scissors" target="_blank">See both Python versions on GitHub</a>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+const EMOJI = { rock: '\u{1F94A}', paper: '\u{1F4C4}', scissors: '\u{2702}\u{FE0F}' };
+const BEATS = { rock: 'scissors', paper: 'rock', scissors: 'paper' };
+const MOVES = ['rock', 'paper', 'scissors'];
+
+let wins = 0, losses = 0, ties = 0;
+
+const statusEl = document.getElementById('status');
+const scoreEl = document.getElementById('score');
+const resultEl = document.getElementById('result');
+const youEmoji = document.getElementById('you-emoji');
+const cpuEmoji = document.getElementById('cpu-emoji');
+
+function play(move){
+  const cpu = MOVES[Math.floor(Math.random() * 3)];
+  youEmoji.textContent = EMOJI[move];
+  cpuEmoji.textContent = EMOJI[cpu];
+  resultEl.style.display = 'flex';
+
+  if (move === cpu){
+    ties++;
+    statusEl.textContent = "It's a tie";
+  } else if (BEATS[move] === cpu){
+    wins++;
+    statusEl.textContent = 'You win';
+  } else {
+    losses++;
+    statusEl.textContent = 'Computer wins';
+  }
+  scoreEl.textContent = wins + ' \u2013 ' + losses + ' \u2013 ' + ties;
+}
+
+document.querySelectorAll('.pick-btn').forEach(btn => {
+  btn.addEventListener('click', () => play(btn.dataset.move));
+});
+</script>
+</body>
+</html>

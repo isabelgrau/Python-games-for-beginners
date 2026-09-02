@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic-tac-toe · Python games for beginners</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .board{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    max-width:280px;
+    margin:0 auto 20px;
+  }
+  .cell{
+    aspect-ratio:1;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    font-weight:600;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .cell:hover:not(.taken){ border-color:#bbb; }
+  .cell.taken{ cursor:default; }
+  .cell.x{ color:var(--rust-text); }
+  .cell.o{ color:#3d5a80; }
+  .controls{ display:flex; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="crumb" href="../index.html">&larr; all games</a>
+  <h1>Tic-tac-toe</h1>
+  <p class="tagline">Local two player. X goes first.</p>
+
+  <div class="card">
+    <div class="status-row">
+      <span class="msg active" id="status">X's turn</span>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="controls">
+      <button class="btn-primary" id="reset">New game</button>
+    </div>
+
+    <details class="build-note">
+      <summary>How this was built <i class="chev">&#9662;</i></summary>
+      <div class="body">
+        Started as a version with no imported packages and no loops, then rebuilt with a <code>while</code> loop to run the game turn by turn, then refactored again into a cleaner win-checking version. This page plays the final version's logic.
+        <br>
+        <a href="https://github.com/isabelgrau/Python-games-for-beginners/tree/main/tictactoe" target="_blank">See all three Python versions on GitHub</a>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+const boardEl = document.getElementById('board');
+const statusEl = document.getElementById('status');
+const resetBtn = document.getElementById('reset');
+
+let board = Array(9).fill(null);
+let turn = 'X';
+let over = false;
+
+const WIN_LINES = [
+  [0,1,2],[3,4,5],[6,7,8],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6]
+];
+
+function checkWinner(){
+  for (const line of WIN_LINES){
+    const [a,b,c] = line;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]){
+      return board[a];
+    }
+  }
+  if (board.every(cell => cell)) return 'draw';
+  return null;
+}
+
+function render(){
+  boardEl.innerHTML = '';
+  board.forEach((val, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'cell' + (val ? ' taken ' + val.toLowerCase() : '');
+    cell.textContent = val || '';
+    cell.addEventListener('click', () => handleMove(i));
+    boardEl.appendChild(cell);
+  });
+}
+
+function handleMove(i){
+  if (over || board[i]) return;
+  board[i] = turn;
+  const result = checkWinner();
+  if (result === 'draw'){
+    statusEl.textContent = "It's a draw";
+    over = true;
+  } else if (result){
+    statusEl.textContent = result + ' wins';
+    over = true;
+  } else {
+    turn = turn === 'X' ? 'O' : 'X';
+    statusEl.textContent = turn + "'s turn";
+  }
+  render();
+}
+
+resetBtn.addEventListener('click', () => {
+  board = Array(9).fill(null);
+  turn = 'X';
+  over = false;
+  statusEl.textContent = "X's turn";
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
